@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
-import axios from "axios"
-import type { Blog } from "../types/Blog"
+import type { Blog } from "../../types/Blog"
 import { useNavigate } from "react-router-dom"
+import blogService from "../../services/blog/blog.service"
 
 function Landing_Card() {
 	const [blogs, setBlogs] = useState<Blog[]>([])
@@ -11,11 +11,13 @@ function Landing_Card() {
 		fetchBlogs()
 	}, [])
 
-	const fetchBlogs = () => {
-		axios
-			.get("http://localhost:3000/blog/public")
-			.then(res => setBlogs(res.data))
-			.catch(err => console.error("Error fetching public blogs:", err))
+	const fetchBlogs = async () => {
+		try {
+			const res = await blogService.getPublicBlogs()
+			setBlogs(res.data)
+		} catch (err) {
+			console.error("Error fetching public blogs:", err)
+		}
 	}
 
 	return (

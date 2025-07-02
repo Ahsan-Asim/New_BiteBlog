@@ -1,31 +1,34 @@
-import React, { useState } from "react"
-import { Link } from "react-router-dom"
-import axios from "axios"
+import React from "react"
+import { useForm } from "react-hook-form"
+import { yupResolver } from "@hookform/resolvers/yup"
+import { registerInitialValues, registerSchema } from "../../Schema/Register/RegisterSchema"
+import FormInput from "../common/FormInput"
+import FormInputPassword from "../common/FormInputPassword"
+import AuthService from "../../services/auth"
+import { loginSchema } from "../../Schema/Login/LoginSchema"
+import { useNavigate } from "react-router-dom"
 
 const Register: React.FC = () => {
-	const [formData, setFormData] = useState({
-		userId: "",
-		userName: "",
-		userPassword: "",
+	const navigate = useNavigate()
+
+	const {
+		register,
+		handleSubmit,
+		formState: { errors },
+		reset,
+	} = useForm({
+		defaultValues: registerInitialValues,
+		resolver: yupResolver(registerSchema),
 	})
 
-	const [message, setMessage] = useState("")
-
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setFormData({ ...formData, [e.target.name]: e.target.value })
-	}
-
-	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault()
+	const onSubmit = async (data: typeof registerInitialValues) => {
 		try {
-			await axios.post("http://localhost:3000/users/register", formData)
-			setMessage("✅ Registration successful!")
-		} catch (error) {
-			if (axios.isAxiosError(error)) {
-				setMessage(error.response?.data.message || "❌ Registration failed")
-			} else {
-				setMessage("❌ An unexpected error occurred")
-			}
+			await AuthService.register(data)
+			alert("Registration successful!")
+			reset()
+			navigate("/login")
+		} catch (error: any) {
+			alert(error?.response?.data?.message || "Registration failed")
 		}
 	}
 
@@ -33,50 +36,34 @@ const Register: React.FC = () => {
 		<div className="flex items-center justify-center min-h-screen bg-gray-900 text-white">
 			<div className="bg-gray-800 p-8 rounded-xl shadow-md w-full max-w-md">
 				<h2 className="text-3xl font-bold text-center mb-6">Create an Account</h2>
-				<form onSubmit={handleSubmit} className="flex flex-col">
-					<label className="mb-1 font-medium">User ID</label>
-					<input
-						type="text"
+				<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+					<FormInput
 						name="userId"
-						value={formData.userId}
-						onChange={handleChange}
+						label="User ID"
 						placeholder="Enter your ID"
-						required
-						className="p-3 rounded-md border border-gray-600 bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+						register={register}
+						errors={errors}
 					/>
-					<label className="mt-4 mb-1 font-medium">Username</label>
-					<input
-						type="text"
+					<FormInput
 						name="userName"
-						value={formData.userName}
-						onChange={handleChange}
+						label="Username"
 						placeholder="Choose a username"
-						required
-						className="p-3 rounded-md border border-gray-600 bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+						register={register}
+						errors={errors}
 					/>
-					<label className="mt-4 mb-1 font-medium">Password</label>
-					<input
-						type="password"
-						name="userPassword"
-						value={formData.userPassword}
-						onChange={handleChange}
-						placeholder="Enter a secure password"
-						required
-						className="p-3 rounded-md border border-gray-600 bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
-					/>
+					<FormInputPassword name="userPassword" label="Password" register={register} errors={errors} />
 					<button
 						type="submit"
-						className="mt-6 bg-orange-500 hover:bg-orange-600 transition-colors text-white font-semibold py-3 rounded-md"
+						className="mt-4 bg-orange-500 hover:bg-orange-600 transition-colors text-white font-semibold py-3 rounded-md"
 					>
 						Sign Up
 					</button>
-					{message && <p className="mt-4 text-center text-sm text-orange-400">{message}</p>}
 				</form>
 				<p className="mt-6 text-sm text-center text-gray-400">
 					Already have an account?{" "}
-					<Link to="/login" className="text-orange-400 hover:underline">
+					<a href="/login" className="text-orange-400 hover:underline">
 						Login
-					</Link>
+					</a>
 				</p>
 			</div>
 		</div>

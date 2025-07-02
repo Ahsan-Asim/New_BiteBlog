@@ -1,4 +1,4 @@
-import Header from "../Header"
+import Header from "../common/Header"
 import Profile_Grids from "./Profile_Grids"
 import Profile_Main from "./Profile_Main"
 

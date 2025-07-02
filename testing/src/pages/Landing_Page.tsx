@@ -1,6 +1,6 @@
 import LandingPage1 from "../components/Landing_Page/Landing_Page"
 
-import Header from "../components/Header"
+import Header from "../components/common/Header"
 
 function Landing_Page() {
 	return (

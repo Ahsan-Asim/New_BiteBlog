@@ -1,14 +1,14 @@
 // src/App.tsx
 import "./App.css"
-import Register from "./pages/Register"
-import Login from "./pages/Login"
+import Register from "./pages/auth/Register"
+import Login from "./pages/auth/Login"
 import Profile from "./pages/Profile"
 import LandingPage from "./pages/Landing_Page"
-import Header from "./components/Header"
+import Header from "./components/common/Header"
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
-import Landing_Card from "./components/Landing_Card"
-import Footer from "./components/Footer"
-import ShowBlog from "./components/Show_Blog"
+import Landing_Card from "./components/Landing_Page/Landing_Card"
+import Footer from "./components/common/Footer"
+import ShowBlog from "./components/common/Show_Blog"
 
 function App() {
 	return (
